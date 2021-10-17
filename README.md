@@ -6,3 +6,11 @@ Step 2: Always do a pull to see if there is any revision changes being made, so 
 Step 3: Commit codes into your branch and DONT merge your branch to master until everyone is agreeable to the change
 
 Step 4: Dont touch the master branch
+
+## Flow of making changes to code
+```
+git status
+git add
+git commit -m <comments>
+git push -u origin <Branch>
+```
