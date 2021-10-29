@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.express as px             # Plotly Express
 import plotly.graph_objs as go
+from tkinter import messagebox
 
 
 # Merging DataFrame when loading in 2 Dataframes (Columns must have same name to combine)
@@ -185,8 +186,12 @@ def basic_line_graph(df, y_axis):
     df = Cleaned Pandas DataFrame (with starting column, labelled as "Date")
     y_axis = Column name used for y-axis (list)
     '''
-    fig = px.line(df, x="Date", y=y_axis)
-    fig.show()
+    try:
+        fig = px.line(df, x="Date", y=y_axis)
+        fig.show()
+    except ValueError:
+        messagebox.showerror("Invalid Inputs", "Some Y-axis are not plot-able together with others, please try other combinations")
+
 
 def basic_bar_graph(df, y_axis):
     '''
@@ -195,5 +200,8 @@ def basic_bar_graph(df, y_axis):
     df = Cleaned Pandas DataFrame (with starting column, labelled as "Date")
     y_axis = Column name used for y-axis (list)
     '''
-    fig = px.bar(df, x="Date", y=y_axis)
-    fig.show()
+    try:
+        fig = px.bar(df, x="Date", y=y_axis)
+        fig.show()
+    except ValueError:
+        messagebox.showerror("Invalid Inputs", "Some Y-axis are not plot-able together with others, please try other combinations")

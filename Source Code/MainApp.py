@@ -19,16 +19,25 @@ def fixed_map(option):
     return [elm for elm in style.map("Treeview", query_opt=option)
             if elm[:2] != ("!disabled", "!selected")]
 
+
 # Function to change frame -------------Author: Sow Ying
 def raise_frame(frame):
     frame.tkraise()
 
-def reload_TreeView():
-    string_df = dfDict["Master"].applymap(str)
-    reversed_df = string_df.iloc[::-1]
 
-    # Clear Treeview table -------------Author: Sow Ying
-    # clear_data(treeView1)
+# Function to show data in TreeView -------------Author: Sow Ying
+def reload_TreeView():
+    '''
+    Reload every value in the Treeview
+    Step 1: Retrieve DataFrame from Master in DataFrame Dictionary
+    Step 2: Clear existing rows in Treeview Table
+    Step 3: Load the values in the Master Dataframe into TreeView
+    '''
+    # Retrieve DataFrame from Master Key in Dictionary
+    string_df = dfDict["Master"].applymap(str)
+    reversed_df = string_df.iloc[::-1]              #Reverse the order of index
+
+    # Clear Existing Treeview table
     treeView1.delete(*treeView1.get_children())
 
     #Load into Tree View
@@ -40,18 +49,27 @@ def reload_TreeView():
     for row in df_row:
         treeView1.insert("","end",values=row)
 
-# Refresh View For TreeView -------------Author: Sow Ying
+
+# Refresh View For TreeView after searching / Clearing export buttons -------------Author: Sow Ying
 def refresh():
-    
+    '''
+    Reload whole MainPage
+    Step 1: Deselect All Export Checkboxes
+    Step 2: Reload all original values in the TreeView
+    Step 3: Create Search Option variables in the drop down button
+    '''
+    # Clear "checked" status Export Button
+    deselectAllCheckbox(exportCheckButtonVar)
+
+    # Reload all original values in the TreeView
     reload_TreeView()
 
+    # Making Search Option Menu ----------------Author:SowYing
     string_df = dfDict["Master"].applymap(str)
     reversed_df = string_df.iloc[::-1]
-
     global columnname
     columnname = list(reversed_df.columns)
   
-    #Search Option Menu-Author:SowYing
     global searchvariable
     searchvariable = tk.StringVar(searchFrame)
     searchvariable.set(columnname[0])
@@ -60,13 +78,13 @@ def refresh():
     searchopt.config(width=85, font=('Courier', 8))
     searchopt.place(rely=0.5, relx=0.01)
     
-
-    CurrentPhase = reversed_df.at[reversed_df.index[0],'Phase']
-    LatestCaseNum = reversed_df.at[reversed_df.index[0],'Cumulative Confirmed']
-    LatestDeathNum = reversed_df.at[reversed_df.index[0],'Cumulative Deaths']
+    #Calculating Overview ----------------Author:Javen
+    CurrentPhase = dfDict["Master"]["Phase"].iat[-1]
+    LatestCaseNum = dfDict["Master"]["Cumulative Confirmed"].iat[-1]
+    LatestDeathNum = dfDict["Master"]["Cumulative Deaths"].iat[-1]
     MortalityRate = (float(LatestDeathNum) / float(LatestCaseNum)) * 100
     
-    #Printing Overview-Author:Javen
+    #Printing Overview ----------------Author:Javen
     OverviewCases.config(text='Total Accumulated Cases:')
     OverviewCases.pack
     CaseNum.config(text=LatestCaseNum)
@@ -84,10 +102,37 @@ def refresh():
     PhaseName.config(text=CurrentPhase)
     PhaseName.pack
 
+
+# Press all select export checkbuttons
+def selectAllCheckbox(CheckButtonVar):
+    '''
+    param:
+    CheckButtonVar - List of all instantiated checkbox button are held
+
+    Function:
+    Select and check all the CheckBoxButton passed in the list parameter
+    '''
+    for x in CheckButtonVar:
+        x.select()
+
+
+# Press all deselect export checkbuttons
+def deselectAllCheckbox(CheckButtonVar):
+    '''
+    param:
+    CheckButtonVar - List of all instantiated checkbox button are held
+
+    Function:
+    Deselect and check all the CheckBoxButton passed in the list parameter
+    '''
+    for x in CheckButtonVar:
+        x.deselect()
+
+
 # Create Canvas and Scrollable Checkbox for StatsFrame and Export-------------Author: Meng Rong
-def createScrollinFrame(mainframe, CheckBoxVar):
+def createScrollinFrame(mainframe, CheckBoxVar, CheckButtonVar):
     # Create Canvas
-    x_canvas = tk.Canvas(mainframe, bg='#636262')
+    x_canvas = tk.Canvas(mainframe, bg='#636262',bd=0,highlightthickness=0)
     x_canvas.pack(side=LEFT, fill=BOTH, expand=1)
     x_scrollbar = tk.Scrollbar(x_canvas, orient=VERTICAL, command=x_canvas.yview)
     x_scrollbar.pack(side=RIGHT, fill=Y)
@@ -97,13 +142,15 @@ def createScrollinFrame(mainframe, CheckBoxVar):
     # Create a second frame in canvas
     x_second_frame = tk.Frame(x_canvas, bg='#636262')
     x_canvas.create_window((0,0), window=x_second_frame, anchor="nw")
-    createCheckButtons(x_second_frame, CheckBoxVar)
+    createCheckButtons(x_second_frame, CheckBoxVar, CheckButtonVar)
 
 # Used in createScrollinFrame to create the checkbuttons
-def createCheckButtons(secondframe, CheckBoxVar):
+def createCheckButtons(secondframe, CheckBoxVar, CheckButtonVar):
     for no in range(len(allColumns)):
         CheckBoxVar.append(tk.IntVar())
-        tk.Checkbutton(secondframe, text=allColumns[no], variable=CheckBoxVar[no], onvalue=1, offvalue=0, background="#636262", foreground='white',selectcolor="#636262").grid(row=no, column=0, sticky='nw')
+        x = tk.Checkbutton(secondframe, text=allColumns[no], variable=CheckBoxVar[no], onvalue=1, offvalue=0, background="#636262", foreground='white',selectcolor="#636262")
+        x.grid(row=no, column=0, sticky='nw')
+        CheckButtonVar.append(x)
 
 # Function to get all checked Checkboxed in list yaxis_CheckBoxVar 
 def selectedCheckBox(CheckBoxVar):
@@ -223,6 +270,7 @@ searchButton.place(rely=0.1, relx=0.8)
 #--- Main Page - Export ---------------------------------------------
 
 exportVarList = []
+exportCheckButtonVar = []
 
 exportFrame = tk.LabelFrame(MainFrame, background="#242424")
 exportFrame.place(relheight=0.5, width=400, rely=0.08, relx=0.68) 
@@ -230,7 +278,11 @@ exportFrame.place(relheight=0.5, width=400, rely=0.08, relx=0.68)
 checkboxFrame = tk.LabelFrame(exportFrame, background="#242424")
 checkboxFrame.place(relheight=0.85, width=400) 
 
-createScrollinFrame(checkboxFrame, exportVarList)
+createScrollinFrame(checkboxFrame, exportVarList, exportCheckButtonVar)
+
+selectAllExportButton = exportButton = tk.Button(exportFrame, text='Select all', width=15,font=('Courier',10,'bold'),background="#636262",
+                                                    foreground="white", command=lambda:selectAllCheckbox(exportCheckButtonVar))
+exportButton.place(rely=0.9, relx=0.1)
 
 exportButton = tk.Button(exportFrame, text='Export', width=15,font=('Courier',10,'bold'),background="#636262",
                                                     foreground="white", command=lambda:em.export_excel(dfDict["Master"], selectedCheckBox(exportVarList)))
@@ -262,6 +314,7 @@ PhaseName.place(rely=0.5,relx=0.68)
 
 #--- Stats Page --------------------------------------------- (__main__ code)
 yaxis_CheckBoxVar = []
+yaxis_CheckButtonVar = []
 
 #To Main Page Button
 toMainBtn2 = tk.Button(StatsFrame, text="Back",height=1, width=10, command=lambda:raise_frame(MainFrame))
@@ -274,7 +327,7 @@ yAxisTitle = ttk.Label(StatsFrame, text='Y-Axis', font=('Aquire',12,'bold'), bac
 yAxisTitle.place(rely=0.07, relx=0.5)
 
 # Create the Canvas and Checkbox Buttons
-createScrollinFrame(yAxisFrame, yaxis_CheckBoxVar)
+createScrollinFrame(yAxisFrame, yaxis_CheckBoxVar, yaxis_CheckButtonVar)
 
 
 # Plot Basic Graphs Label --------------------------------------------Author: Meng Rong
@@ -284,12 +337,11 @@ basicGraphFrame.place(relheight=0.4, relwidth=0.12, rely=0.1, relx=0.86)
 # Plot Basic Graphs Button --------------------------Author: BaoHuan & Meng Rong 
 viewLinegraphbtn = tk.Button(basicGraphFrame, text="LINEGRAPH", width=15, font=('courier', 10, 'bold'), background = "#242424",
                             foreground="white", command=lambda:cvdstats.basic_line_graph(dfDict["Master"], selectedCheckBox(yaxis_CheckBoxVar)))
-viewLinegraphbtn.place(rely=0.2, relx=0.05)
+viewLinegraphbtn.place(rely=0.1, relx=0.05)
 
 viewCountplotBtn = tk.Button(basicGraphFrame, text="BARGRAPH", width=15, font=('courier', 10, 'bold'), background = "#242424",
                             foreground="white", command=lambda:cvdstats.basic_bar_graph(dfDict['Master'], selectedCheckBox(yaxis_CheckBoxVar)))
-viewCountplotBtn.place(rely=0.4, relx=0.05)
-
+viewCountplotBtn.place(rely=0.25, relx=0.05)
 
 
 # Analysis Frame 1 --------------------------------------------Author: Meng Rong

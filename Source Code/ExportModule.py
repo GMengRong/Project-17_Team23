@@ -1,10 +1,17 @@
 # Exporting Selected DataFrame -------------Author: Yong Javen
 
 from os import name
+from tkinter import Message, Widget, filedialog , messagebox , ttk
 
 def export_excel(df, selectedColumn):
-    exported_data = df[selectedColumn].copy()
-    exported_data.to_csv('Exported.csv', index=False)
+
+    try:
+        exported_data = df[selectedColumn].copy()
+        exported_data.to_csv('Exported.csv', index=False)
+        messagebox.showinfo("Confirmation","Your data has been exported!")
+    except:
+        messagebox.showinfo("Error","Your data cannot be exported!")
+
 
     # compilated_list=[]
     
