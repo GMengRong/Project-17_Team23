@@ -1,47 +1,56 @@
 # Covid-19 Analyser Application
 An interactive application for user to analyse Covid19 data
 
-## Description
-The Covid-19 Analyser Application for userrs to better 
+## <ins>Description</ins>
+The Covid-19 Analyser Application for users to better 
 understand the situation of the Covid19 in Singapore.
 This application can be useful based on the individual/healthcare perspective.
 
 There are different functions implemented which includes:
 
 * Read the data
+   * [Kaggle Dataset](https://data.world/hxchua/covid-19-singapore) - Author: Chua Hui Xiang
+   * [Data.gov Dataset](https://data.gov.sg/dataset/covid-19-case-numbers) - Author: MOH
 * View the data
 * Search data
 * View Statistic based on data
 * Export data
 
-## Getting Started
+<br/>
 
-### Dependencies
-Need a python extension to run the program
+## <ins>Getting Started</ins>
 
-Modules to install:
-* chart_studio==1.1.0
-* cufflinks==0.17.3
-* matplotlib==numpy
-* pandas==1.3.3
-* plotly==5.3.1
+### **Dependencies**
+Serveral python modules are needed to run the program
 
-### Installing
+To install the modules, insert the command:
+```
+pip install -r requirement.txt
+```
+
+### **Installing**
 * Program can be download using the Github
 * It include 3 datasets in the dataset folder
-* User can replace the 3 dataset with a latest version
+* User can replace the 3 dataset with the latest version
 
-### Executing program
+<br/>
+
+## <ins>Executing program</ins>
+   
 **Step 1: Run the Program**
 
 Execute the MainApp.py, to launch the GUI Interface of the application
+
+The excel files in the dataset folder are loaded and read by the program
+
+
 
 **Step 2: View Dataset**
 
 The read data are stored in the dataframe and displayed it in the canvas mainframe. The dataframe include the columns from the original excel sheet and the merged data. All the data are cleaned and missing data is replaced by Nan to indicate the value cannot be represented by 0 as it is not considered as a case. 
 
 Some basic statistic displayed in the application mainframe:
-* Total Accumulated Cases - Total number of contracted cases
+* Total Accumulated Cases - Total number of Covid19 cases
 * Total Accumulateed Death - Total number of death due to Covid19
 * Mortaility Rate - Show the rate of people contracted Covid19
 * Current Phase
@@ -50,7 +59,7 @@ There is also a button for Phase to show more information about the Phase.
 
 **Step 3: Search Function**
 
-A search box and a dropdown list are implemeneted to allow user to search based on their search input and selected column. The droopdown list contains all the columns from the dataframe. The default selected column is 'Date'. There is also a refresh button to return the original data. For example
+A search box and a dropdown list are implemeneted to allow user to search based on their search input and selected column. The droopdown list contains all the columns from the dataframe. The default selected column is 'Date'. There is also a refresh button to return the original data. For example:
 
 1. Select 'Date' from the dropdown list
 2. Enter a value such as '2020'
@@ -86,8 +95,9 @@ User can plot a basic graph (Bar Graph and Line Graph) based on the selected var
     * It shows the percentage of cases of people who are in ICU by Age Group 
 * Local Cases by Age Range - Represent by Pie Chart
     * It shows the perecentage of local cases by Age Group
+<br/>
 
-## Help
+## <ins>Help</ins>
 Helper info
 ```
 help(activecasesDF)
@@ -103,14 +113,20 @@ help(basic_bar_graph)
 
 ```
 
-## Authors
-Contributors name
+## <ins>Authors</ins>
+* Gian Meng Rong
+* Chow Sow Ying
+* Png Bao Huan
+* Yong Javen
+* Seah Su Qin
 
+</br>
 
-## Acknowledgements 
+## <ins>Acknowledgements</ins>
 Code Reference:
-* [Tkinter: Color issue](https://stackoverflow.com/a/60949800/4352930)
-
+* [Tkinter: Color](https://stackoverflow.com/a/60949800/4352930)
+* [Tkinter: Treeview]((https://www.youtube.com/watch?v=WdhNkabUAVU&ab_channel=softwareManiac)
+* [Tkinter: Switch Frame](https://www.semicolonworld.com/question/42826/switch-between-two-frames-in-tkinter#comment-21)
 DataSet:
 * [Kaggle Dataset](https://data.world/hxchua/covid-19-singapore)
 
