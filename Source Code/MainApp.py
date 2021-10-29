@@ -9,7 +9,6 @@ import webbrowser
 import CovidStatistics as cvdstats
 import SearchModule as sm
 import LoadModule as lm
-import URLModule as um
 import ExportModule as em
 
 
