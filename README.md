@@ -1,4 +1,4 @@
-# Covid-19 Analyser Application
+# User Guide - Covid-19 Analyser Application
 An interactive application for user to analyse Covid19 data
 
 ## <ins>Description</ins>
