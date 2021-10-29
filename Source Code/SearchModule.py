@@ -11,7 +11,6 @@ def search(isClicked_v,searchvariable_v,columnname_v,searchInput_v,reload_TreeVi
     for i, j in enumerate(columnname_v):
         if j == searchedcol:
             colindex = i
-            print(colindex)
 
     INPUT = searchInput_v.get("1.0", "end-1c")
 

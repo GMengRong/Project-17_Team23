@@ -43,7 +43,7 @@ Execute the MainApp.py, to launch the GUI Interface of the application
 
 The excel files in the dataset folder are loaded and read by the program
 
-![Folder](https://github.com/Xynorimas/Project-17_Team23/blob/master/Folder.jpg)
+![Folder](https://github.com/Xynorimas/Project-17_Team23/blob/master/SourceCode/pictures/Folder.jpg)
 
 **Step 2: View Dataset**
 
@@ -57,7 +57,7 @@ Some basic statistic displayed in the application mainframe:
 
 There is also a button for Phase to show more information about the Phase. 
 
-![MainApp](https://github.com/Xynorimas/Project-17_Team23/blob/master/MainApp.png)
+![MainApp](https://github.com/Xynorimas/Project-17_Team23/blob/master/SourceCode/pictures/MainApp.png)
 
 **Step 3: Search Function**
 
@@ -68,12 +68,12 @@ A search box and a dropdown list are implemeneted to allow user to search based 
 3. The data in the mainframe is filter out to display rows that occured in year 2020.  
 4. Click refresh to unfilter the data
 
-![Search Function](https://github.com/Xynorimas/Project-17_Team23/blob/master/Search_Function.png)
+![Search Function](https://github.com/Xynorimas/Project-17_Team23/blob/master/SourceCode/pictures/Search_Function.png)
 
 **Step 4: View Statistic**
 
 User can click the 'View Statistic' button to choose which functions to perform to display the visuals. There are 3 type to represent the statistic
-![Stats Page](https://github.com/Xynorimas/Project-17_Team23/blob/master/View_Stats.png)
+![Stats Page](https://github.com/Xynorimas/Project-17_Team23/blob/master/SourceCode/pictures/View_Stats.png)
 
 *1. Basic Statistic*
 * Active Cases in Singapore: The total people who are in General Ward, ICU and in isolation. 

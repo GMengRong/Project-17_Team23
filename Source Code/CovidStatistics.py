@@ -20,7 +20,7 @@ def mergedf(df1, df2):
     return combinedf
 
 
-# Creating New DataFrames to merge for export ----------------------------------Author: Meng Rong and Bao Huan
+# Functions to create New DataFrames to merge for export ---------------------- Author: Meng Rong and Bao Huan
 def activecasesDF(df):    
     '''
     Creates a new DataFrame from "Kaggle" DF, input results from formula into new column.
@@ -62,8 +62,8 @@ def icuByAgeDF(df):
     Formula:
     (Age Group + ICU Keyword) ....
     '''    
-    # Regex for the ICU people, might have multiple inputs of ICU, in this case of the new file there is only 1
-    icuRegex = "(Critically ill and Intubated in ICU)+"
+    # Regex for the ICU people - to be changed if Original value from dataset changes
+    icuRegex = "Critically ill and Intubated in ICU"
 
     # Single out all the Rows that are related to ICU and make a pivot table dataframe to get individual age groups as a column
     tempdf = df.loc[df['clinical_status'].str.contains(pat=icuRegex, regex=True)]
@@ -97,7 +97,7 @@ def localsByAgeDF(df):
     return newdf
 
 
-# For Analysis Graph Plotting-------------------------Author: Meng Rong
+# Functions for plotting Analysis Graph ------------------------ Author: Meng Rong
 def analysis_bar_ActiveCases(df):
     '''
     Manipulates "Current Active Cases" DF:
@@ -107,7 +107,27 @@ def analysis_bar_ActiveCases(df):
     '''
     list1 = ["Intensive Care Unit (ICU)", "General Wards MOH report", "In Isolation MOH report"]
     fig = px.bar(df, x='Date', y=list1, text='Current Active Cases')
-    fig.update_layout(title_text='Daily Active Cases bargraph')
+
+    # Styling of Graphs
+    fig.update_traces(
+        textfont_size=22,
+        hovertemplate='Date: %{x}\
+                        <br>Value: %{y}\
+                        <br>Total for the day: %{text}',
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=18,
+            font_family="Rockwell"
+        )
+    )
+    fig.update_layout(
+        title_text='Daily Active Cases bargraph',
+        legend_title = "Legends",
+        font=dict(
+            family="Arial, Sans-serif",
+            size=16,
+        ),
+    )
     fig.show()
 
 
@@ -120,9 +140,24 @@ def analysis_scatter_percentO2(df):
     '''
     list1 = ["Intensive Care Unit (ICU)", "General Wards MOH report", "Requires Oxygen Supplementation"]
     internaldf = df.dropna(subset=["Percentage Oxygen Supplementation"])
-    fig = px.scatter(internaldf, x="Date", y="Percentage Oxygen Supplementation", trendline="ols", hover_data=list1)
-    fig.update_layout(title_text='Percentage Oxygen Supplement required by Hospitalised patients')
+    fig = px.scatter(internaldf, x="Date", y="Percentage Oxygen Supplementation", trendline="ols", 
+        hover_data = {
+            "No of Required Oxygen": internaldf['Requires Oxygen Supplementation'],
+            "No. of ICU": internaldf['Intensive Care Unit (ICU)'],
+            "No. of General Wards": internaldf['General Wards MOH report'],
+        }
+    )
+    # Styling of Graphs
+    fig.update_layout(
+        title_text='Percentage Oxygen Supplement required by Hospitalised patients',
+        font=dict(
+            family="Arial, Sans-serif",
+            size=16,
+        ),
+        hovermode='x unified'
+    )
     fig.show()
+
 
 def analysis_pie_ICU_AgeGroup(df):
     '''
@@ -134,7 +169,6 @@ def analysis_pie_ICU_AgeGroup(df):
     '''
     date = str(df.sort_values(by='Date').iloc[0,0].date())
     dict1 = {}
-
     # Store values into dict1
     # Key = Age Group Column Name
     # Value = Total count of all values in (Age Group) column
@@ -150,8 +184,27 @@ def analysis_pie_ICU_AgeGroup(df):
         values.append(v)
 
     fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
-    fig.update_traces(hoverinfo='label+percent', textinfo='label+value', textfont_size=20)
-    fig.update_layout(title_text='Total ICU based on Age Group from ' + date)
+
+    # Styling of Graphs
+    fig.update_traces(
+        textinfo='label+percent',
+        textfont_size=22,
+        hovertemplate='Age Group: %{label}\
+                        <br>Number of Cases: %{value}', 
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=18,
+            font_family="Rockwell"
+        )
+    )
+    fig.update_layout(
+        title_text='Total ICU based on Age Group from ' + date,
+        legend_title = "Legends",
+        font=dict(
+            family="Arial, Sans-serif",
+            size=22,
+        ),
+    )
     fig.show()
 
 
@@ -172,20 +225,41 @@ def analysis_pie_TotalCases_AgeGroup(df):
     for value in colhead:
         dict1[value] = df[value].sum()
 
-    # 
     labels = []
     values = []
     for k,v in dict1.items():
         labels.append(k)
         values.append(v)
 
+    # Calculate total cases to show in hover styling for interactive graph
+    total = sum(values)
+
     fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
-    fig.update_traces(hoverinfo='label+percent', textinfo='label+value', textfont_size=20)
-    fig.update_layout(title_text='Active Cases by Age Range from ' + date)
+
+    # Styling of Graphs
+    fig.update_traces(
+        textinfo='label+percent',
+        textfont_size=22,
+        hovertemplate='Age Group: %{label}\
+                        <br>Number of Cases: %{value}',
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=18,
+            font_family="Rockwell"
+        )
+    )
+    fig.update_layout(
+        title_text='Total ICU based on Age Group from ' + date,
+        legend_title = "Legends",
+        font=dict(
+            family="Arial, Sans-serif",
+            size=22,
+        ),
+    )
     fig.show()
 
 
-# For Basic Graph Plotting ----------------------------------Author: Meng Rong
+# Functions for plotting Basic Graph (Y-axis Columns) ----------------------------------Author: Meng Rong
 def basic_line_graph(df, y_axis):
     '''
     Creates a Line Graph of DataFrame:
@@ -195,7 +269,18 @@ def basic_line_graph(df, y_axis):
     '''
     try:
         fig = px.line(df, x="Date", y=y_axis)
+        
+        fig.update_layout(
+            xaxis_title = "Date",
+            yaxis_title = "Total Value",
+            legend_title = "Legends",
+            font=dict(
+                family="Courier New, monospace",
+                size=18,
+            ),
+        )
         fig.show()
+
     except ValueError:
         messagebox.showerror("Invalid Inputs", "Some Y-axis are not plot-able together with others, please try other combinations")
 
@@ -209,6 +294,17 @@ def basic_bar_graph(df, y_axis):
     '''
     try:
         fig = px.bar(df, x="Date", y=y_axis)
+
+        fig.update_layout(
+            xaxis_title = "Date",
+            yaxis_title = "Total Value",
+            legend_title = "Legends",
+            font=dict(
+                family="Courier New, monospace",
+                size=18,
+            ),
+        )
         fig.show()
+
     except ValueError:
         messagebox.showerror("Invalid Inputs", "Some Y-axis are not plot-able together with others, please try other combinations")

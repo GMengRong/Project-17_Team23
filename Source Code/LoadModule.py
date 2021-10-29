@@ -1,4 +1,4 @@
-#Load Function - by Chow Sow Ying
+#Load Function - by Sow Ying & Meng Rong
 
 import tkinter as tk
 from tkinter import Message, Widget, filedialog , messagebox , ttk
@@ -6,16 +6,7 @@ import pandas as pd
 import os
 import re       # Regex for Data pre-processing
 
-
-# might not be needed
-# Browsing Data File -------------Author: Sow Ying
-def file_dialog(FileLabel_V):
-    filename = filedialog.askopenfilename(initialdir="/", title="Select a file", filetypes=(("xlsx files","*.xlsx"),("All Files","*.*")))
-    FileLabel_V["text"] = filename
-    return None
-
-
-# Load Main Raw Data into DataFrame -------------Author: Sow Ying & Meng Rong
+# Load Main Raw Data into DataFrame -------------Author: Sow Ying (loading data) &  Meng Rong (cleaning data)
 def load_excel_data():
     try:
         tempdict = {}
