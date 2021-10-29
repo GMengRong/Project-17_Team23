@@ -1,7 +1,4 @@
 import tkinter as tk
-from tkinter import Message, Widget, messagebox , ttk
-import numpy
-import pandas as pd
 
 # Function to Search up data from the TreeView -------------Author: Sow Ying
 def search(isClicked_v,searchvariable_v,columnname_v,searchInput_v,reload_TreeView,treeView1_v):

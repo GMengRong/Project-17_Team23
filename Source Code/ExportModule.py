@@ -1,15 +1,8 @@
 # Exporting Selected DataFrame -------------Author: Yong Javen
 
 from os import name
-import tkinter as tk
-from tkinter import Message, Widget, filedialog , messagebox , ttk
-import numpy
-import pandas as pd
-
 
 def export_excel(df, selectedColumn):
-    # pass
-
     exported_data = df[selectedColumn].copy()
     exported_data.to_csv('Exported.csv', index=False)
 

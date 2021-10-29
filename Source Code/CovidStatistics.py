@@ -1,10 +1,5 @@
-from datetime import datetime
-import numpy as np
 import pandas as pd
 import plotly.express as px             # Plotly Express
-import chart_studio.plotly as py        # Plotly Chart Studio
-import cufflinks as cf                  # Cufflinks to bridge Plotly with Pandas
-import plotly.offline
 import plotly.graph_objs as go
 
 

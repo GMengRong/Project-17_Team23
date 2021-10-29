@@ -1,15 +1,8 @@
 # Imported Modules
-from datetime import datetime
-from itertools import count
 import tkinter as tk
 from tkinter import font  as tkfont
 from tkinter import Message, Widget, filedialog , messagebox , ttk
 from tkinter.constants import BOTH, BOTTOM, CENTER, DISABLED, FALSE, LEFT, NORMAL, RIGHT, TRUE, VERTICAL, X, Y
-import numpy
-import pandas as pd
-from pandas.core.frame import DataFrame
-from pandas.core.indexing import check_bool_indexer
-import cufflinks as cf                  # Cufflinks to bridge Plotly with Pandas
 
 # Self-made Modules
 import CovidStatistics as cvdstats #MengRong and BH code module
