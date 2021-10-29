@@ -57,7 +57,7 @@ Some basic statistic displayed in the application mainframe:
 
 There is also a button for Phase to show more information about the Phase. 
 
-![MainApp](https://github.com/Xynorimas/Project-17_Team23/blob/master/SourceCode/pictures/MainApp.png)
+![MainApp](pictures/MainApp.png)
 
 **Step 3: Search Function**
 
