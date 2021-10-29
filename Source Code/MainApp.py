@@ -3,29 +3,31 @@ import tkinter as tk
 from tkinter import font  as tkfont
 from tkinter import Message, Widget, filedialog , messagebox , ttk
 from tkinter.constants import BOTH, BOTTOM, CENTER, DISABLED, FALSE, LEFT, NORMAL, RIGHT, TRUE, VERTICAL, X, Y
+import webbrowser
 
 # Self-made Modules
-import CovidStatistics as cvdstats #MengRong and BH code module
+import CovidStatistics as cvdstats
 import SearchModule as sm
 import LoadModule as lm
 import URLModule as um
 import ExportModule as em
 
 
-#--- Internal Tkinter Functions -------------------------------------------------------------------------------------------------------------
-
-#Fixed Colour Problem -----------------Author: Sow Ying
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Internal Functions:
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#Fixed Colour Problem ------------------------------------------- (Author: Sow Ying)
 def fixed_map(option):
     return [elm for elm in style.map("Treeview", query_opt=option)
             if elm[:2] != ("!disabled", "!selected")]
 
 
-# Function to change frame -------------Author: Sow Ying
+# Function to change frame ------------------------------------------- (Author: Sow Ying)
 def raise_frame(frame):
     frame.tkraise()
 
 
-# Function to show data in TreeView -------------Author: Sow Ying
+# Function to show data in TreeView ------------------------------------------- (Author: Sow Ying)
 def reload_TreeView():
     '''
     Reload every value in the Treeview
@@ -35,13 +37,13 @@ def reload_TreeView():
     '''
     # Retrieve DataFrame from Master Key in Dictionary
     string_df = dfDict["Master"].applymap(str)
-    reversed_df = string_df.iloc[::-1]              #Reverse the order of index
+    reversed_df = string_df.iloc[::-1]                  #Reverse the order of index
 
     # Clear Existing Treeview table
-    treeView1.delete(*treeView1.get_children())
+    treeView1.delete(*treeView1.get_children())         #Destroy all the existing widgets in the treeview
 
-    #Load into Tree View
-    treeView1["column"] = list(reversed_df.columns)
+    #Insert Data into Tree View
+    treeView1["column"] = list(reversed_df.columns)     
     treeView1["show"] = "headings"
     for column in treeView1["column"]:
         treeView1.heading(column, text=column)
@@ -50,7 +52,7 @@ def reload_TreeView():
         treeView1.insert("","end",values=row)
 
 
-# Refresh View For TreeView after searching / Clearing export buttons -------------Author: Sow Ying
+# Refresh View For TreeView after searching / Clearing export buttons ------------- (Author: Sow Ying)
 def refresh():
     '''
     Reload whole MainPage
@@ -64,7 +66,7 @@ def refresh():
     # Reload all original values in the TreeView
     reload_TreeView()
 
-    # Making Search Option Menu ----------------Author:SowYing
+    # Making Search Option Menu ---------------- (Author:Sow Ying)
     string_df = dfDict["Master"].applymap(str)
     reversed_df = string_df.iloc[::-1]
     global columnname
@@ -78,13 +80,13 @@ def refresh():
     searchopt.config(width=85, font=('Courier', 8))
     searchopt.place(rely=0.5, relx=0.01)
     
-    #Calculating Overview ----------------Author:Javen
+    #Calculating Overview ---------------- (Author: Javen)
     CurrentPhase = dfDict["Master"]["Phase"].iat[-1]
     LatestCaseNum = dfDict["Master"]["Cumulative Confirmed"].iat[-1]
     LatestDeathNum = dfDict["Master"]["Cumulative Deaths"].iat[-1]
     MortalityRate = (float(LatestDeathNum) / float(LatestCaseNum)) * 100
     
-    #Printing Overview ----------------Author:Javen
+    #Printing Overview ---------------- (Author: Javen)
     OverviewCases.config(text='Total Accumulated Cases:')
     OverviewCases.pack
     CaseNum.config(text=LatestCaseNum)
@@ -103,7 +105,7 @@ def refresh():
     PhaseName.pack
 
 
-# Press all select export checkbuttons
+# Press all select export checkbuttons ------------- (Author: Meng Rong)
 def selectAllCheckbox(CheckButtonVar):
     '''
     param:
@@ -116,7 +118,7 @@ def selectAllCheckbox(CheckButtonVar):
         x.select()
 
 
-# Press all deselect export checkbuttons
+# Press all deselect export checkbuttons ------------- (Author: Meng Rong)
 def deselectAllCheckbox(CheckButtonVar):
     '''
     param:
@@ -129,8 +131,13 @@ def deselectAllCheckbox(CheckButtonVar):
         x.deselect()
 
 
-# Create Canvas and Scrollable Checkbox for StatsFrame and Export-------------Author: Meng Rong
+# Create Canvas and Scrollable Checkbox for StatsFrame and Export------------- (Author: Meng Rong)
 def createScrollinFrame(mainframe, CheckBoxVar, CheckButtonVar):
+    '''
+    1. Creates a Tkinter Canvas to attached the scrollbar to the variable "mainframe" being passed in
+    2. Create a Second Frame to hold the Canvas
+    3. Launch the createCheckButton Function
+    '''
     # Create Canvas
     x_canvas = tk.Canvas(mainframe, bg='#636262',bd=0,highlightthickness=0)
     x_canvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -144,15 +151,21 @@ def createScrollinFrame(mainframe, CheckBoxVar, CheckButtonVar):
     x_canvas.create_window((0,0), window=x_second_frame, anchor="nw")
     createCheckButtons(x_second_frame, CheckBoxVar, CheckButtonVar)
 
-# Used in createScrollinFrame to create the checkbuttons
+
+# Used in createScrollinFrame to create the checkbuttons------------- (Author: Meng Rong)
 def createCheckButtons(secondframe, CheckBoxVar, CheckButtonVar):
+    '''
+    1. Create CheckButtons based on the number of column headers in the Master DataFrame
+    2. Store the variables made while creating the CheckButtonss into list "CheckBoxVar, CheckButtonVar" being parsed in to the function
+    '''
     for no in range(len(allColumns)):
         CheckBoxVar.append(tk.IntVar())
         x = tk.Checkbutton(secondframe, text=allColumns[no], variable=CheckBoxVar[no], onvalue=1, offvalue=0, background="#636262", foreground='white',selectcolor="#636262")
         x.grid(row=no, column=0, sticky='nw')
         CheckButtonVar.append(x)
 
-# Function to get all checked Checkboxed in list yaxis_CheckBoxVar 
+
+# Function to get all checked Checkboxed in list yaxis_CheckBoxVar --------------------- (Author: Meng Rong)
 def selectedCheckBox(CheckBoxVar):
     axislist = []
     for item in range(len(CheckBoxVar)):
@@ -161,10 +174,12 @@ def selectedCheckBox(CheckBoxVar):
     return axislist
 
 
-#--- Launch App --------------------------------------------------------- 
-'''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+-----------
+Launch App 
+-----------
 Step 1: Analyse and process Datasets
-'''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 # Dictionary containing Dataset initiatlise
 dfDict = {}   #Dictionary of all DF objects loaded into the program, (Key: Name of File w/o .Ext (str), Value: DataFrame)
 
@@ -191,12 +206,14 @@ dfDict["Master"] = cvdstats.mergedf(dfDict["Master"], dfDict["PercentO2"])      
 dfDict["Master"] = cvdstats.mergedf(dfDict["Master"], dfDict["icuByAge"])               # Add 4 new columns (Depends on new age group)
 dfDict["Master"] = cvdstats.mergedf(dfDict["Master"], dfDict["localsByAge"])            # Add 6 new columns (Depends on new age group)
 
+# Stores all the column title in the Master DataFrame into a list
 allColumns = list(dfDict['Master'].columns)
 
-'''''''''''''''''''''''''''''''''''''''
-Step 2: Create all GUI Object
-'''''''''''''''''''''''''''''''''''''''
-#Start Build Tkinter Objects
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Step 2: Create all GUI Object in Main Frame
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# Start Build Tkinter Objects
 root = tk.Tk()
 root.geometry("1280x720")       # Width x height
 root.pack_propagate(False)      # Dont resize based on widget
@@ -207,14 +224,15 @@ style.map("Treeview",
           foreground=fixed_map("foreground"),
           background=fixed_map("background"))
 
-#Set Frame Pages
+# Set Frame Pages
 MainFrame = tk.Frame(root,bg='#242424')
 MainFrame.place(height=720, width=1280)   
 
 StatsFrame = tk.Frame(root,bg='#242424')
 StatsFrame.place(height=720, width=1280)
 
-#--- Main Frame ----------------------------------------------
+
+#--- Main Frame ------------------------------------------- (Author: Sow Ying)
 menuFrame = tk.LabelFrame(MainFrame,background="#636262")
 menuFrame.place(height=50, width=1270, relx=0.005 ,rely=0.005)  
 
@@ -235,11 +253,16 @@ toStatsBtn.place(rely=0.61, relx=0.68)
 #Open Webpage
 openURL =  tk.Button(MainFrame, text="Phase - More Info",height =1, width = 20, font=('Courier',12,'bold'),
                                                         background="#636262",foreground="white", borderwidth=0,
-                                                        command=lambda:um.Openurl())
-openURL.place(rely=0.93, relx=0.8)
+                                                        command=lambda:webbrowser.open("https://www.moh.gov.sg/covid-19-phase-advisory"))
+openURL.place(rely=0.93, relx=0.6)
 
-#--- Main Page - TreeView ---------------------------------------------
+openURL2 =  tk.Button(MainFrame, text="Follow App on Github",height =1, width = 20, font=('Courier',12,'bold'),
+                                                        background="#636262",foreground="white", borderwidth=0,
+                                                        command=lambda:webbrowser.open("https://github.com/Xynorimas/Project-17_Team23"))
+openURL2.place(rely=0.93, relx=0.8)
 
+
+#--- Main Page - TreeView --------------------------------- (Author: Sow Ying)
 #Frame for TreeView
 viewFrame = tk.LabelFrame(MainFrame,background="#636262")
 viewFrame.place(height=400, width=850, relx=0.005, rely=0.2)  
@@ -256,7 +279,7 @@ treescrollx.pack(side="bottom", fill="x")
 treescrolly.pack(side="right", fill="y")
 
 
-#--- Main Page - Search ---------------------------------------------
+#--- Main Page - Search --------------------------------------------- (Author: Sow Ying)
 searchFrame = tk.LabelFrame(MainFrame,background="#636262")
 searchFrame.place(height=80, width=850, relx=0.005,rely=0.08)
 
@@ -267,8 +290,8 @@ searchButton = tk.Button(searchFrame, text="SEARCH",width=15,font=('Courier',10,
                                                     foreground="white",command=lambda:sm.search(1,searchvariable,columnname,searchInput,reload_TreeView,treeView1))
 searchButton.place(rely=0.1, relx=0.8)
 
-#--- Main Page - Export ---------------------------------------------
 
+#--- Main Page - Export --------------------------------------------- (Author: Javen and Su Qin)
 exportVarList = []
 exportCheckButtonVar = []
 
@@ -289,8 +312,7 @@ exportButton = tk.Button(exportFrame, text='Export', width=15,font=('Courier',10
 exportButton.place(rely=0.9, relx=0.6)
 
 
-#--- Main Page - Overview  --------------------------------------------- (__main__ code)
-
+#--- Main Page - Overview  ------------------------------------------- (Author: Javen and Su Qin)
 OverviewFrame = tk.LabelFrame(MainFrame,background="#636262")
 OverviewFrame.place(height=100, width=1270, rely=0.77, relx=0.005)
 
@@ -312,29 +334,41 @@ PhaseName = ttk.Label(OverviewFrame, font=('Courier',20,'bold'),background="#636
 PhaseName.place(rely=0.5,relx=0.68)
 
 
-#--- Stats Page --------------------------------------------- (__main__ code)
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Step 3: Create all GUI Object in Stats Page
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+# List to hold the CheckButtons variables to plot basic graphs based on the Column Headers
 yaxis_CheckBoxVar = []
 yaxis_CheckButtonVar = []
 
-#To Main Page Button
+#To go back Main Page Button
 toMainBtn2 = tk.Button(StatsFrame, text="Back",height=1, width=10, command=lambda:raise_frame(MainFrame))
 toMainBtn2.place(rely=0, relx=0)
 
-# Basic Graph Y-axis Checkbox Frame --------------------------------------------Author: Meng Rong
+
+# Basic Graph Y-axis Frame - Stats Page (Creation of "(X)" Area) ---------------- (Author: Meng Rong and Bao Huan)
+# x x x x x x x x x x x x x x x x x x x
+# x                 X                 x
+# x                 X        (X)      x
+# x                 X                 x
+# x ----------------------------------x
+# x                                   x
+# x                                   x
+# x                                   x
+# x x x x x x x x x x x x x x x x x x x
 yAxisFrame = tk.Frame(StatsFrame,background="#636262")
 yAxisFrame.place(relwidth=0.35, relheight=0.4, rely=0.1, relx=0.5) 
 yAxisTitle = ttk.Label(StatsFrame, text='Y-Axis', font=('Aquire',12,'bold'), background="#636262",foreground="white")
 yAxisTitle.place(rely=0.07, relx=0.5)
 
-# Create the Canvas and Checkbox Buttons
+# Create the Canvas and Checkbox Buttons for the Graph Y-axis
 createScrollinFrame(yAxisFrame, yaxis_CheckBoxVar, yaxis_CheckButtonVar)
 
-
-# Plot Basic Graphs Label --------------------------------------------Author: Meng Rong
+# Plot Basic Graphs Frame
 basicGraphFrame = tk.LabelFrame(StatsFrame, background="#242424", text="Plot Basic Graph", font=('Aquire',12,'bold'), foreground="white")
 basicGraphFrame.place(relheight=0.4, relwidth=0.12, rely=0.1, relx=0.86)
 
-# Plot Basic Graphs Button --------------------------Author: BaoHuan & Meng Rong 
+# Plot Basic Graphs Button
 viewLinegraphbtn = tk.Button(basicGraphFrame, text="LINEGRAPH", width=15, font=('courier', 10, 'bold'), background = "#242424",
                             foreground="white", command=lambda:cvdstats.basic_line_graph(dfDict["Master"], selectedCheckBox(yaxis_CheckBoxVar)))
 viewLinegraphbtn.place(rely=0.1, relx=0.05)
@@ -344,7 +378,16 @@ viewCountplotBtn = tk.Button(basicGraphFrame, text="BARGRAPH", width=15, font=('
 viewCountplotBtn.place(rely=0.25, relx=0.05)
 
 
-# Analysis Frame 1 --------------------------------------------Author: Meng Rong
+# Analysis Frame 1 - Stats Page (Creation of "(X)" Area) ---------------- (Author: Meng Rong and Bao Huan)
+# x x x x x x x x x x x x x x x x x x x
+# x                 X                 x
+# x       (X)       X                 x
+# x                 X                 x
+# x ----------------------------------x
+# x                                   x
+# x                                   x
+# x                                   x
+# x x x x x x x x x x x x x x x x x x x
 analysisFrame1 = tk.LabelFrame(StatsFrame, background="#242424", text="Active Cases in Singapore Today", font=('Aquire',12,'bold'), foreground="white")
 analysisFrame1.place(relwidth=0.45, relheight=0.4, rely=0.1, relx=0.02)
 
@@ -369,11 +412,18 @@ Current_Active_Cases = ttk.Label(analysisFrame1, text=dfDict["Current Active Cas
 Current_Active_Cases.grid(row=3, column=2)
 
 
-# Analysis Frame 2 --------------------------------------------Author: Meng Rong
+# Analysis Frame 2 - Stats Page (Creation of "(X)" Area) ---------------- (Author: Meng Rong and Bao Huan)
+# x x x x x x x x x x x x x x x x x x x
+# x                 X                 x
+# x                 X                 x
+# x                 X                 x
+# x ----------------------------------x
+# x                                   x
+# x                (X)                x
+# x                                   x
+# x x x x x x x x x x x x x x x x x x x
 analysisFrame2 = tk.LabelFrame(StatsFrame, background="#242424", text="Total Cases by Age Group (Data from 22nd Sept Onwards)", font=('Aquire',12,'bold'), foreground="white")
 analysisFrame2.place(relheight=0.40, relwidth=0.7, rely=0.55, relx=0.02)
-
-# casesAgeGroup = cvdstats.totalCaseByAgeStats(dfDict['LocalCasesByAgeGroup'])
 
 #First row of frame grid
 totalcases70plus_Label = ttk.Label(analysisFrame2, text='Cases Age 70+:' ,font=('Courier',18,'bold'), background="#242424",foreground="#87CEEB")
@@ -407,13 +457,12 @@ totalcases0to11_Label.grid(row=2, column=2, padx=10, pady=(35,0))
 totalcases0to11 = ttk.Label(analysisFrame2, text=dfDict["localsByAge"]["0 - 11 years old Local Cases"].sum(),font=('Courier',18,'bold'), background="#242424",foreground="white")
 totalcases0to11.grid(row=3, column=2)
 
-
-
-# Plot Analysis Graphs Label
+# Analysis Graphs Label --------------------------------- (Author: BaoHuan & Meng Rong)
 customGraphFrame = tk.LabelFrame(StatsFrame, background="#242424", text="Plot Custom Graph", font=('Aquire',12,'bold'), foreground="white")
 customGraphFrame.place(relheight=0.40, relwidth=0.25, rely=0.55, relx=0.73)
 
-# Create Custom Graphical Analysis Button ---------------------------------Author: BaoHuan & Meng Rong
+
+# Plot Analyssis Graph Button --------------------------------- (Author: BaoHuan & Meng Rong)
 customBtn1 = tk.Button(customGraphFrame, text="Current Active Cases", width=35, font=('courier', 10, 'bold'), background = "#242424",
                             foreground="white", command=lambda:cvdstats.analysis_bar_ActiveCases(dfDict["Current Active Cases"]))
 customBtn1.place(rely=0.15, relx=0.05)
@@ -431,7 +480,9 @@ customBtn4 = tk.Button(customGraphFrame, text="Local Cases by Age Range", width=
 customBtn4.place(rely=0.6, relx=0.05)
 
 
-#--- Show GUI ---------------------------------------------
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Step 4: Show the GUI Interface
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 refresh()
 raise_frame(MainFrame)
 root.mainloop()

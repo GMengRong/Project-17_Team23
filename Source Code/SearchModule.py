@@ -1,6 +1,8 @@
+# Search Module for data in TreeView -------------Author: Sow Ying
+
 import tkinter as tk
 
-# Function to Search up data from the TreeView -------------Author: Sow Ying
+# Function to Search up data from the TreeView
 def search(isClicked_v,searchvariable_v,columnname_v,searchInput_v,reload_TreeView,treeView1_v):
 
     global colindex

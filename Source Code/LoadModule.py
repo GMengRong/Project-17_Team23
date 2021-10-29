@@ -52,11 +52,11 @@ def load_excel_data():
         df2 = pd.read_csv(secondFile)
         df3 = pd.read_csv(thirdFile)
 
-        df2 = df2.rename(columns={df2.columns[0]: "Date"})
+        # Rename "Date" Column to standardise for all DataFrames
+        df2 = df2.rename(columns={df2.columns[0]: "Date"})      
         df2["Date"] = pd.to_datetime(df2["Date"])
         df3 = df3.rename(columns={df3.columns[0]: "Date"})
         df3["Date"] = pd.to_datetime(df3["Date"])
-        
         
         # Save into dictionary - Easy to remember Key names, DataFrame as Value
         tempdict["Master"] = df
@@ -72,63 +72,6 @@ def load_excel_data():
     except FileNotFoundError:
          tk.messagebox.showerror(message="Dataset file not found")
          return None
-
-
-
-    #Load Overview-Author:Javen
-    CurrentPhase = reversed_df.at[reversed_df.index[0],'Phase']
-    LatestCaseNum = reversed_df.at[reversed_df.index[0],'Cumulative Confirmed']
-    LatestDeathNum = reversed_df.at[reversed_df.index[0],'Cumulative Deaths']
-    MortalityRate = (LatestDeathNum / LatestCaseNum) * 100
-    
-
-    #Printing Overview-Author:Javen
-    OverviewCases.config(text='Total Accumulated Cases:')
-    OverviewCases.pack
-    CaseNum.config(text=LatestCaseNum)
-    CaseNum.pack
-    OverviewDeaths.config(text='Total Accumulated Death:')
-    OverviewDeaths.pack
-    DeathNum.config(text=LatestDeathNum)
-    DeathNum.pack
-    OverviewMortality.config(text='Mortality Rate:')
-    OverviewMortality.pack
-    MortalityNum.config(text="%.2f" %  MortalityRate +"%")
-    MortalityNum.pack
-    OverviewPhase.config(text='Current Phase:')
-    OverviewPhase.pack
-    PhaseName.config(text=CurrentPhase)
-    PhaseName.pack
-  
-
-# Combined with refresh function
-# def load_treeview(df):
-#     #Load Column Names
-#     columnname = list(df.columns)
-
-#     # Updating the buttons
-#     searchc1["text"] = columnname[0]
-#     searchc2["text"] = columnname[1]
-#     searchc3["text"] = columnname[2]
-#     searchc4["text"] = columnname[3]
-#     searchc5["text"] = columnname[4]
-    
-#     exportc1["text"] = columnname[0]
-#     exportc2["text"] = columnname[1]
-#     exportc3["text"] = columnname[2]
-#     exportc4["text"] = columnname[3]
-#     exportc5["text"] = columnname[4]
-
-#     #Load into Tree View
-#     treeView1["column"] = list(df.columns)
-#     treeView1["show"] = "headings"
-#     for column in treeView1["column"]:
-#         treeView1.heading(column, text=column)
-
-#     df_row = df.to_numpy().tolist()
-#     for row in df_row:
-#         treeView1.insert("","end",values=row)
-#     return None
 
    
 

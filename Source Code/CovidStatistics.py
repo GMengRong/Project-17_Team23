@@ -1,11 +1,20 @@
+# Statistics Processing and Analysing ----- by Meng Rong & Bao Huan
+
 import pandas as pd
 import plotly.express as px             # Plotly Express
 import plotly.graph_objs as go
 from tkinter import messagebox
 
-
 # Merging DataFrame when loading in 2 Dataframes (Columns must have same name to combine)
 def mergedf(df1, df2):
+    '''
+    Merge DF1 with DF2, using full outer join style, where the insections are the same columns found in both DF
+
+    DF1                     DF2                     Merged DF
+    A   |   B               B   |   C               A   |   B   |   C
+    Index1                  Index1                  Index1
+    Index2                  Index2                  Index2
+    '''
     samecol = [x for x in list(df1.columns) if x in list(df2.columns)]
     combinedf = df1.merge(df2, on=samecol, how='outer') # on=samecol has to be there or else a similar column name will have <same col>_y new columns, if the second column in the on-key has a different value, that row of table1 and table2 wont show
     return combinedf
@@ -14,41 +23,43 @@ def mergedf(df1, df2):
 # Creating New DataFrames to merge for export ----------------------------------Author: Meng Rong and Bao Huan
 def activecasesDF(df):    
     '''
-    Creates a new DataFrame from "Kaggle" DF
+    Creates a new DataFrame from "Kaggle" DF, input results from formula into new column.
     
     "Current Active Cases" Structure:
     Date    ||      ICU     ||      General Ward        ||      In Isolation      ||      (new added column)
     
-    Adds a new column:
+    Formula:
     Current Active Cases = (ICU + General Ward + Isolation)
     '''
     activecasesdf = df[["Date", "Intensive Care Unit (ICU)", "General Wards MOH report", "In Isolation MOH report"]].copy()
     activecasesdf["Current Active Cases"] = df["Intensive Care Unit (ICU)"] + df["General Wards MOH report"] + df["In Isolation MOH report"]
     return activecasesdf
 
+
 def percentO2DF(df):
     '''
-    Creates a new DataFrame from "Kaggle" DF:
+    Creates a new DataFrame from "Kaggle" DF, input results from formula into new column.
 
     "PercentO2" Structure:
     Date    ||      ICU     ||      General Ward        ||      Require O2 Supplementation      ||      (new added column)
     
-    Adds a new column:
+    Formula:
     Percentage req O2 Supplementation  = (O2 Count / (ICU + General Ward)  * 100
     '''
     percentO2df = df[["Date", "Intensive Care Unit (ICU)", "General Wards MOH report", "Requires Oxygen Supplementation"]].copy()
     percentO2df["Percentage Oxygen Supplementation"] = (df["Requires Oxygen Supplementation"] / (df["Intensive Care Unit (ICU)"] + df["General Wards MOH report"])  * 100).round(2)
     return percentO2df
 
+
 def icuByAgeDF(df):       
     '''
-    Creates a new DataFrame from "Hospital" DF:
+    Creates a new DataFrame from "Hospital" DF, input results from formula into new column.
 
     "icuByAge" Structure:
     Date    ||      (1st Age Group + ICU Keyword))    || (2nd Age Group + ICU keyword)      ||      ....
                             Count of cases                      Count of cases
     
-    Adds multiple column:
+    Formula:
     (Age Group + ICU Keyword) ....
     '''    
     # Regex for the ICU people, might have multiple inputs of ICU, in this case of the new file there is only 1
@@ -66,14 +77,15 @@ def icuByAgeDF(df):
     newdf = newdf.fillna(0)
     return newdf
 
+
 def localsByAgeDF(df):
     '''
-    Creates a new DataFrame from "LocalCasesByAgeGroup" DF:
+    Creates a new DataFrame from "LocalCasesByAgeGroup" DF, input results from formula into new column.
 
     "localsByAge" Structure:
     Date    ||      (1st Age Group + Local Cases Keyword))    || (2nd Age Group + Local Cases keyword)      ||      ....
 
-    Adds multiple column:
+    Formula:
     (Age Group + Local Cases Keyword) ....
     '''
     newdf = pd.pivot_table(df, values="count_of_case", index="Date", columns="age_group")
@@ -171,11 +183,6 @@ def analysis_pie_TotalCases_AgeGroup(df):
     fig.update_traces(hoverinfo='label+percent', textinfo='label+value', textfont_size=20)
     fig.update_layout(title_text='Active Cases by Age Range from ' + date)
     fig.show()
-
-    
-def custom_animated_ActiveCases_AgeGroup(df):
-    pass
-
 
 
 # For Basic Graph Plotting ----------------------------------Author: Meng Rong
